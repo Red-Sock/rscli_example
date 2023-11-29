@@ -12,6 +12,6 @@ gen-server: .pre-gen-server .gen-server
 
 .gen-server:
 	protoc --go_out=./pkg/api --go-grpc_out=./pkg/api \
-	-I /Users/alexbukov/go/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.16.0/third_party/googleapis \
+	-I $(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.16.0/third_party/googleapis \
 	--proto_path=. \
-	./api/*.proto
+	./api/grpc/*.proto

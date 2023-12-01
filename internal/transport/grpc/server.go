@@ -21,6 +21,8 @@ type GrpcServer struct {
 func NewServer(cfg config.Config, server *api.GRPC) *GrpcServer {
 	srv := grpc.NewServer()
 
+	// Register your servers here
+
 	return &GrpcServer{
 		srv:         srv,
 		networkType: "tcp",

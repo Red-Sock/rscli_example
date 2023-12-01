@@ -1,69 +1,48 @@
-package rest_api
+package grpc_api
 
 import (
 	"context"
-	"encoding/json"
-	"net/http"
+	"net"
 
-	errors "github.com/Red-Sock/trace-errors"
 	"github.com/godverv/matreshka/api"
-	"github.com/gorilla/mux"
-	"github.com/rs/cors"
-	"github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
 
 	"github.com/Red-Sock/rscli_example/internal/config"
 )
 
-type Server struct {
-	HttpServer *http.Server
+type GrpcServer struct {
+	srv *grpc.Server
 
-	version string
+	networkType string
+	address     string
 }
 
-func NewServer(cfg config.Config, server *api.Rest) *Server {
-	r := mux.NewRouter()
+func NewServer(cfg config.Config, server *api.GRPC) *GrpcServer {
+	srv := grpc.NewServer()
 
-	s := &Server{
-		HttpServer: &http.Server{
-			Addr:    "0.0.0.0:" + server.GetPortStr(),
-			Handler: setUpCors().Handler(r),
-		},
+	return &GrpcServer{
+		srv:         srv,
+		networkType: "tcp",
+		address:     "0.0.0.0:" + server.GetPortStr(),
+	}
+}
 
-		version: cfg.AppInfo().Version,
+func (s *GrpcServer) Start(_ context.Context) error {
+	lis, err := net.Listen(s.networkType, s.address)
+	if err != nil {
+		return errors.Wrapf(err, "error when tried to listen for %s, %s", s.networkType, s.address)
 	}
 
-	r.HandleFunc("/version", s.Version)
-
-	return s
-}
-
-func (s *Server) Start(ctx context.Context) error {
-	go func() {
-		err := s.HttpServer.ListenAndServe()
-		if err != nil && errors.Is(err, http.ErrServerClosed) {
-			logrus.Fatal(err)
-		}
-	}()
+	err = s.srv.Serve(lis)
+	if err != nil {
+		return errors.Wrap(err, "error serving grpc")
+	}
 
 	return nil
 }
 
-func (s *Server) Stop(ctx context.Context) error {
-	return s.HttpServer.Shutdown(ctx)
-}
-
-func (s *Server) formResponse(r interface{}) ([]byte, error) {
-	return json.Marshal(r)
-}
-
-func setUpCors() *cors.Cors {
-	return cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{
-			http.MethodPost,
-			http.MethodGet,
-		},
-		AllowedHeaders:   []string{"*"},
-		AllowCredentials: false,
-	})
+func (s *GrpcServer) Stop(_ context.Context) error {
+	s.srv.GracefulStop()
+	return nil
 }

@@ -5,7 +5,7 @@ package rscli_example_api;
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
-option go_package = "/rscli_example_api";
+option go_package = "/api";
 
 service rscli_exampleAPI {
   rpc Version(PingRequest) returns (PingResponse) {

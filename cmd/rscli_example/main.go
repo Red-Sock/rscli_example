@@ -9,7 +9,6 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/Red-Sock/rscli_example/internal/config"
-	"github.com/Red-Sock/rscli_example/internal/transport"
 	"github.com/Red-Sock/rscli_example/internal/utils/closer"
 	//_transport_imports
 )
@@ -34,8 +33,8 @@ func main() {
 		return nil
 	})
 
-	m := transport.NewManager()
-	m.AddServer()
+	//m := transport.NewManager()
+	//m.AddServer(grpc.New)
 
 	waitingForTheEnd()
 

@@ -4,7 +4,7 @@
 // - protoc             v4.25.0
 // source: api/grpc/rscli_example_api.proto
 
-package rscli_example_api
+package api
 
 import (
 	context "context"

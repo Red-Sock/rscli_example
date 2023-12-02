@@ -9,6 +9,8 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/Red-Sock/rscli_example/internal/config"
+	"github.com/Red-Sock/rscli_example/internal/transport"
+	grpc_api "github.com/Red-Sock/rscli_example/internal/transport/grpc"
 	"github.com/Red-Sock/rscli_example/internal/utils/closer"
 	//_transport_imports
 )
@@ -33,8 +35,14 @@ func main() {
 		return nil
 	})
 
-	//m := transport.NewManager()
-	//m.AddServer(grpc.New)
+	m := transport.NewManager()
+
+	gs, err := cfg.Api().GRPC(config.ApiGrpc)
+	if err != nil {
+		logrus.Fatalf("can't find grpc api: %s", err)
+	}
+
+	m.AddServer(grpc_api.NewServer(cfg, gs))
 
 	waitingForTheEnd()
 

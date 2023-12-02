@@ -1,6 +1,8 @@
 package config
 
 const (
-	ApiGrpc    = "Api_grpc"
-	ApiRestAPI = "Api_rest_api"
+	ResourcePostgres = "Resource_postgres"
+	ApiGrpc          = "Api_grpc"
+	ApiRestAPI       = "Api_rest_api"
+	ApiRest          = "Api_rest"
 )

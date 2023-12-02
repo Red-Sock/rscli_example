@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/Red-Sock/rscli_example/internal/config"
+	pb "github.com/Red-Sock/rscli_example/pkg/api"
 )
 
 type GrpcServer struct {
@@ -22,7 +23,7 @@ func NewServer(cfg config.Config, server *api.GRPC) *GrpcServer {
 	srv := grpc.NewServer()
 
 	// Register your servers here
-
+	pb.RegisterRscliExampleAPIServer(srv, &version{})
 	return &GrpcServer{
 		srv:         srv,
 		networkType: "tcp",
